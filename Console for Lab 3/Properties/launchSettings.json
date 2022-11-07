@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Console for Lab 3": {
+      "commandName": "Project",
+      "commandLineArgs": "Hello Wordl"
+    }
+  }
+}
