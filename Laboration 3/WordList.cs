@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Console;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
 
 namespace Library_For_Laboration3
 {
@@ -30,27 +31,27 @@ namespace Library_For_Laboration3
         }
         public static WordList LoadList(string name)
         {
-            string FilePath = $"{FolderPath}\\{name}";
-            string[] FileLines = File.ReadLines(FilePath).ToArray();
-            string[] Languages = FileLines.First().Split(';').Where(x => !string.IsNullOrEmpty(x)).ToArray();
-
+            string FilePath = $"{FolderPath}\\{name.ToLower()}.dat";
+            string[][] FileLines = File.ReadLines(FilePath).Select(LinesArray => LinesArray.Split(';')
+                                                                                                .Where(x => !string.IsNullOrEmpty(x))
+                                                                                                .ToArray()).ToArray();
+            //Here somehow causing to add an empty string into the array  need fix
+            string[] Languages = FileLines.First();
+            
             WordList SelectedList = new(name, Languages);
-            for (int i = 0; i < FileLines.Length; i++)
+            for (int i = 1; i < FileLines.Length; i++)
             {
-                if (i != 0)
-                {
-                    string[] WordTranslations = FileLines[i].Split(';');
-                    SelectedList.Words.Add(new Word(WordTranslations));
-                }
+                string[] WordTranslations = FileLines[i];
+                SelectedList.Add(WordTranslations);
             }
-
+            
             return SelectedList;
         }
 
         public void Save()
         {
-            string FilePath = $"{FolderPath}\\{Name}.dat";
-            string Content = String.Join(";", Languages) + Environment.NewLine;
+            string FilePath = $"{FolderPath}\\{Name.ToLower()}.dat";
+            string Content = String.Join(";", Languages)+ ";" + Environment.NewLine;
            
             foreach (Word W in Words)
             {
@@ -73,7 +74,7 @@ namespace Library_For_Laboration3
             bool FoundWord = false;
             foreach (Word W in Words.ToList())
             {
-                if (W.Translation[translation] == word)
+                if (W.Translation[translation].ToLower() == word.ToLower())
                 {
                     Words.Remove(W);
                     FoundWord = true;
@@ -87,22 +88,12 @@ namespace Library_For_Laboration3
         }
         public void List(int sortByTranslation, Action<string[]> showTranslation)
         {
-            Words = Words.OrderBy(arr => arr.Translation[sortByTranslation]).ToList();
-            showTranslation = (trans) => trans.OrderBy(arr => arr == trans[sortByTranslation]);
-
-            foreach(Word WordContent in Words)
+            List<Word> SortedWords = Words.OrderBy(arr => arr.Translation[sortByTranslation]).ToList();
+            List<string[]> AllTranslations = SortedWords.Select(L => L.Translation).Prepend(Languages).ToList();
+            
+            foreach(string[] Translations in AllTranslations)
             {
-                string ShowCaseWord = "";
-                foreach(string Word in WordContent.Translation)
-                {
-                    ShowCaseWord += $"{Word}";
-                    for(int i = ShowCaseWord.Length; i < 15; i++)
-                    {
-                        ShowCaseWord += " ";
-                    }
-                    
-                }
-                WriteLine(ShowCaseWord);   
+                showTranslation(Translations);
             }
         }
         public Word GetWordToPractice()
