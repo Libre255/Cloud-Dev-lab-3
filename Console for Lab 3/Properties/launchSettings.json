@@ -2,7 +2,7 @@
   "profiles": {
     "Console for Lab 3": {
       "commandName": "Project",
-      "commandLineArgs": "-practice example"
+      "commandLineArgs": "-practice example\r\n"
     }
   }
 }

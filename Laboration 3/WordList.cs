@@ -1,30 +1,29 @@
-﻿using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Console;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-
-namespace Library_For_Laboration3
+﻿namespace Library_For_Laboration3
 {
     public class WordList
     {
         private static string FolderPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\Laboration3";
+
         private List<Word> Words = new();
         public string Name { get; }
         public string[] Languages { get; }
 
         public WordList(string name, params string[] languages)
         {
+            CheckFonderExists();
             Name = name;    
             Languages = languages;
         }
-        
-        public static string[] GetList()
+        private static void CheckFonderExists()
         {
+            if (!Directory.Exists(FolderPath))
+            {
+                Directory.CreateDirectory(FolderPath);
+            }
+        }
+        public static string[] GetList() //Here check/creat folder
+        {
+            CheckFonderExists();
             DirectoryInfo FolderContent = new DirectoryInfo(FolderPath);
             string[] FilesNames = FolderContent.GetFiles("*.dat").Select(content => content.Name).ToArray();
             
@@ -32,10 +31,19 @@ namespace Library_For_Laboration3
         }
         public static WordList LoadList(string name)
         {
+            CheckFonderExists();
             string FilePath = $"{FolderPath}\\{name.ToLower()}.dat";
-            string[][] FileLines = File.ReadLines(FilePath).Select(LinesArray => LinesArray.Split(';')
+            string[][] FileLines = { new string[] { } };
+            try
+            {
+                FileLines = File.ReadLines(FilePath).Select(LinesArray => LinesArray.Split(';')
                                                                                                 .Where(x => !string.IsNullOrEmpty(x))
                                                                                                 .ToArray()).ToArray();
+            }
+            catch(FileNotFoundException FNF)
+            {
+                return null;
+            }
             //Here somehow causing to add an empty string into the array  need fix
             string[] Languages = FileLines.First();
             

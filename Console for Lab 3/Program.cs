@@ -45,6 +45,19 @@ namespace ConsoleLab3
             }
             
         }
+        private static bool FileNotFoundMsg(string[] commands)
+        {
+            WordList SelectedList = WordList.LoadList(commands[1]);
+            if(SelectedList == null)
+            {
+                WriteLine("File was not found, you may writed wrong name, try again.");
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         private static void PracticeAWord(string[] commands)
         {
             if(commands.Length == 1)
@@ -53,43 +66,47 @@ namespace ConsoleLab3
             }
             else
             {
-                WordList SelectedList = WordList.LoadList(commands[1]);
-                List<string> AlreadyPracticedWords = new();
-                int WrongAnswers = 0;
-                for (int i = 0; i < SelectedList.Count(); i++)
+                if (!FileNotFoundMsg(commands))
                 {
-                    Word WordForPractice = SelectedList.GetWordToPractice();
-                    while (AlreadyPracticedWords.Contains(WordForPractice.Translation[0]))
+                    WordList SelectedList = WordList.LoadList(commands[1]);
+                    List<string> AlreadyPracticedWords = new();
+                    int WrongAnswers = 0;
+                
+                    for (int i = 0; i < SelectedList.Count(); i++)
                     {
-                        WordForPractice = SelectedList.GetWordToPractice();
-                    }
-                    AlreadyPracticedWords.Add(WordForPractice.Translation[0]);
-
-                    string FromLanguage = SelectedList.Languages[WordForPractice.FromLanguage];
-                    string ToLanguage = SelectedList.Languages[WordForPractice.ToLanguage];
-                    string Word = WordForPractice.Translation[WordForPractice.FromLanguage];
-                    string CorrectTranslation = WordForPractice.Translation[WordForPractice.ToLanguage];
-
-                    Write($"Translate the {FromLanguage} word {Word} to {ToLanguage}: ");
-                    string userInput = ReadLine();
-                    if(userInput == "")
-                    {
-                        var precent = 100 - Math.Round(((float)WrongAnswers / i * 100), 2);
-                        WriteLine($"You practiced {i} words.");
-                        WriteLine($"{precent}% of your answers where correct!");
-                        break;
-                    }
-                    else
-                    {
-                        if(userInput != CorrectTranslation)
+                        Word WordForPractice = SelectedList.GetWordToPractice();
+                        while (AlreadyPracticedWords.Contains(WordForPractice.Translation[0]))
                         {
-                            WriteLine($"Wrong answer! The correct answer would be '{CorrectTranslation}'. (Press any key to continue!)");
-                            WrongAnswers++;
-                            ReadKey();
+                            WordForPractice = SelectedList.GetWordToPractice();
+                        }
+                        AlreadyPracticedWords.Add(WordForPractice.Translation[0]);
+
+                        string FromLanguage = SelectedList.Languages[WordForPractice.FromLanguage];
+                        string ToLanguage = SelectedList.Languages[WordForPractice.ToLanguage];
+                        string Word = WordForPractice.Translation[WordForPractice.FromLanguage];
+                        string CorrectTranslation = WordForPractice.Translation[WordForPractice.ToLanguage];
+
+                        Write($"Translate the {FromLanguage} word {Word} to {ToLanguage}: ");
+                        string userInput = ReadLine();
+                        if(userInput == "")
+                        {
+                            var precent = 100 - Math.Round(((float)WrongAnswers / i * 100), 2);
+                            WriteLine($"You practiced {i} words.");
+                            WriteLine($"{precent}% of your answers where correct!");
+                            break;
                         }
                         else
                         {
-                            WriteLine($"Correct answer!");
+                            if(userInput != CorrectTranslation)
+                            {
+                                WriteLine($"Wrong answer! The correct answer would be '{CorrectTranslation}'. (Press any key to continue!)");
+                                WrongAnswers++;
+                                ReadKey();
+                            }
+                            else
+                            {
+                                WriteLine($"Correct answer!");
+                            }
                         }
                     }
                 }
@@ -103,41 +120,46 @@ namespace ConsoleLab3
             }
             else
             {
-                WordList SelectedList = WordList.LoadList(commands[1]);
-                WriteLine($"Amount of words in the list {commands[1]} is {SelectedList.Count()}");
+                if (!FileNotFoundMsg(commands))
+                {
+                    WordList SelectedList = WordList.LoadList(commands[1]);
+                    WriteLine($"Amount of words in the list [{commands[1]}] is {SelectedList.Count()}");
+                }
             }
         }
         private static void ListAllWords(string[] commands)
         {
-            WordList SelectedList = WordList.LoadList(commands[1]);
-
             if (commands.Length == 1)
             {
                 WriteLine("Please also insert <list name> (optional: <sortByLanguage>) ");
             }else
             {
-                Action<string[]> Myaction = (WordTranslations) =>
+                if (!FileNotFoundMsg(commands))
                 {
-                    string ShowCaseWord = "";
-                    foreach (string Word in WordTranslations)
+                    WordList SelectedList = WordList.LoadList(commands[1]);
+                    Action<string[]> Myaction = (WordTranslations) =>
                     {
-
-                        ShowCaseWord += $"{Word}";
-                        for (int i = ShowCaseWord.Length; i < 15; i++)
+                        string ShowCaseWord = "";
+                        foreach (string Word in WordTranslations)
                         {
-                            ShowCaseWord += " ";
+
+                            ShowCaseWord += $"{Word}";
+                            for (int i = ShowCaseWord.Length; i < 15; i++)
+                            {
+                                ShowCaseWord += " ";
+                            }
                         }
+                        WriteLine(ShowCaseWord);
+                    };
+                    if(commands.Length == 3)
+                    {
+                        int LanguageIndex = SelectedList.Languages.ToList().FindIndex(L => L == commands[2]);
+                        SelectedList.List(LanguageIndex, Myaction);
                     }
-                    WriteLine(ShowCaseWord);
-                };
-                if(commands.Length == 3)
-                {
-                    int LanguageIndex = SelectedList.Languages.ToList().FindIndex(L => L == commands[2]);
-                    SelectedList.List(LanguageIndex, Myaction);
-                }
-                else
-                {
-                    SelectedList.List(0, Myaction);
+                    else
+                    {
+                        SelectedList.List(0, Myaction);
+                    }
                 }
             }
         }
@@ -146,66 +168,91 @@ namespace ConsoleLab3
             if(commands.Length == 1)
             {
                 WriteLine("Please also insert <list name> <language> <word 1> <word 2> .. <word n> ");
-            }else if (commands.Length == 2)
+            }else
             {
-                WriteLine("Please also insert <language> <word 1> <word 2> .. <word n> ");
-            }else if(commands.Length == 3)
-            {
-                WriteLine("Please also insert <word 1> <word 2> .. <word n> ");
-            }
-            else
-            {
-                string WordsDeleted = "";
-                WordList SelectedList = WordList.LoadList(commands[1]);
-                for(int i = 3; i < commands.Length; i++)
+                if (!FileNotFoundMsg(commands))
                 {
-                    int LanguageIndex = SelectedList.Languages.ToList().FindIndex(L => L == commands[2]);
-                    SelectedList.Remove(LanguageIndex, commands[i]);
-                    WordsDeleted += $"{commands[i]} ";
+                    if (commands.Length == 2)
+                    {
+                        WriteLine("Please also insert <language> <word 1> <word 2> .. <word n> ");
+                    }
+                    else if (commands.Length == 3)
+                    {
+                        WriteLine("Please also insert <word 1> <word 2> .. <word n> ");
+                    }
+                    else
+                    {
+                        string WordsDeleted = "";
+                        WordList SelectedList = WordList.LoadList(commands[1]);
+
+                        for (int i = 3; i < commands.Length; i++)
+                        {
+                            int LanguageIndex = SelectedList.Languages.ToList().FindIndex(L => L == commands[2]);
+                            bool FoundWord = SelectedList.Remove(LanguageIndex, commands[i]);
+                            if (FoundWord)
+                            {
+                                SelectedList.Save();
+                                WriteLine($"The {commands[2]} Word {commands[i]} has been deleted from the list [{commands[1]}]");
+                            }
+                            else
+                            {
+                                WriteLine($"The {commands[2]} Word {commands[i]} was not found on the list [{commands[1]}]");
+                            }
+                        }
+                    }
                 }
-                SelectedList.Save();
-                WriteLine($"The following words has been deleted: {WordsDeleted}");
             }
         }
 
-        private static void AddWordToList(string[]comands)
+        private static void AddWordToList(string[]commands)
         {
-            if(comands.Length == 1)
+            if(commands.Length == 1)
             {
                 WriteLine("Please insert list name after -add");
             }
             else
             {
-                List<string> userTranslations = new();
-                WordList SelectedList = WordList.LoadList(comands[1]);
-                WriteLine("Press enter (empty line) to stop input of new words");
-                for(int i = 0; i < SelectedList.Languages.Length; i++)
+                if (!FileNotFoundMsg(commands))
                 {
-                    string Word;
-                    if(i == 0)
+                    List<string> userTranslations = new();
+                    WordList SelectedList = WordList.LoadList(commands[1]);
+                    WriteLine("Press enter (empty line) to stop input of new words");
+                    for(int i = 0; i < SelectedList.Languages.Length; i++)
                     {
-                        Write($"Add new word ({SelectedList.Languages[i]}): ");
+                        string Word;
+                        if(i == 0)
+                        {
+                            Write($"Add new word ({SelectedList.Languages[i]}): ");
+                        }
+                        else
+                        {
+                            Write($"Add {SelectedList.Languages[i]} translation: ");
+                        }
+                        Word = ReadLine();
+                        userTranslations.Add(Word);
                     }
-                    else
-                    {
-                        Write($"Add {SelectedList.Languages[i]} translation: ");
-                    }
-                    Word = ReadLine();
-                    userTranslations.Add(Word);
-                }
 
-                SelectedList.Add(userTranslations.ToArray());
-                SelectedList.Save();
-                WriteLine($"1 word was added to list {comands[1]}");
+                    SelectedList.Add(userTranslations.ToArray());
+                    SelectedList.Save();
+                    WriteLine($"1 word was added to list {commands[1]}");
+                }
             }
         }
 
         private static void ShowAllList()
         {
             string[] NameOfTheLists = WordList.GetList();
-            foreach (string List in NameOfTheLists)
+            if(NameOfTheLists.Length == 0)
             {
-                WriteLine(List);
+                WriteLine("No list in the folder");
+            }
+            else
+            {
+                WriteLine("[List Names]");
+                foreach (string List in NameOfTheLists)
+                {
+                    WriteLine(List);
+                }
             }
         }
         private static void CreateNewList(string[]comands)
@@ -218,7 +265,7 @@ namespace ConsoleLab3
                 WriteLine("Please also insert the following comands <language 1> <language 2> .. <langauge n>");
             }else if(comands.Length == 3)
             {
-                WriteLine("Please inser at least 2 or more languages");
+                WriteLine("Please insert at least 2 or more languages");
             }
             else
             {
@@ -234,13 +281,6 @@ namespace ConsoleLab3
                 WordList NewList = new WordList(ListName, Languages.ToArray());
                 NewList.Save();
                 WriteLine($"Your list {ListName} has been succesfully created!");
-            }
-        }
-        private void CheckFonderExists()
-        {
-            if (!Directory.Exists(FolderPath))
-            {
-                Directory.CreateDirectory(FolderPath);
             }
         }
     }
