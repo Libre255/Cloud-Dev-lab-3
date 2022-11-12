@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using static System.Console;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
 namespace Library_For_Laboration3
 {
@@ -98,8 +99,16 @@ namespace Library_For_Laboration3
         }
         public Word GetWordToPractice()
         {
-            int randomIndex = new Random().Next(0, Words.Count + 1);
-            return Words[randomIndex];
+            int randomWordIndex = new Random().Next(0, Count());
+            int randomFromLanguageIndex = new Random().Next(0, Languages.Length); 
+            int randomToLanguageIndex = new Random().Next(0, Languages.Length);
+
+            while (randomFromLanguageIndex == randomToLanguageIndex)
+            {
+                randomToLanguageIndex = new Random().Next(0, Languages.Length);
+            }
+            Word RandomWord = new Word(randomFromLanguageIndex, randomToLanguageIndex, Words[randomWordIndex].Translation);
+            return RandomWord;
         }
 
     }

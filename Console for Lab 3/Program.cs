@@ -54,9 +54,45 @@ namespace ConsoleLab3
             else
             {
                 WordList SelectedList = WordList.LoadList(commands[1]);
-                Word PracticeWord = SelectedList.GetWordToPractice();
+                List<string> AlreadyPracticedWords = new();
+                int WrongAnswers = 0;
+                for (int i = 0; i < SelectedList.Count(); i++)
+                {
+                    Word WordForPractice = SelectedList.GetWordToPractice();
+                    while (AlreadyPracticedWords.Contains(WordForPractice.Translation[0]))
+                    {
+                        WordForPractice = SelectedList.GetWordToPractice();
+                    }
+                    AlreadyPracticedWords.Add(WordForPractice.Translation[0]);
 
+                    string FromLanguage = SelectedList.Languages[WordForPractice.FromLanguage];
+                    string ToLanguage = SelectedList.Languages[WordForPractice.ToLanguage];
+                    string Word = WordForPractice.Translation[WordForPractice.FromLanguage];
+                    string CorrectTranslation = WordForPractice.Translation[WordForPractice.ToLanguage];
 
+                    Write($"Translate the {FromLanguage} word {Word} to {ToLanguage}: ");
+                    string userInput = ReadLine();
+                    if(userInput == "")
+                    {
+                        var precent = 100 - Math.Round(((float)WrongAnswers / i * 100), 2);
+                        WriteLine($"You practiced {i} words.");
+                        WriteLine($"{precent}% of your answers where correct!");
+                        break;
+                    }
+                    else
+                    {
+                        if(userInput != CorrectTranslation)
+                        {
+                            WriteLine($"Wrong answer! The correct answer would be '{CorrectTranslation}'. (Press any key to continue!)");
+                            WrongAnswers++;
+                            ReadKey();
+                        }
+                        else
+                        {
+                            WriteLine($"Correct answer!");
+                        }
+                    }
+                }
             }
         }
         private static void CountList(string[] commands)
