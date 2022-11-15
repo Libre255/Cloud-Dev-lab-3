@@ -98,7 +98,7 @@
         public void List(int sortByTranslation, Action<string[]> showTranslation)
         {
             List<Word> SortedWords = Words.OrderBy(arr => arr.Translation[sortByTranslation]).ToList();
-            List<string[]> AllTranslations = SortedWords.Select(L => L.Translation).Prepend(Languages).ToList();
+            List<string[]> AllTranslations = SortedWords.Select(L => L.Translation).ToList();
             
             foreach(string[] Translations in AllTranslations)
             {

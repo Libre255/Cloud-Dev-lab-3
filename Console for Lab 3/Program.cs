@@ -137,6 +137,16 @@ namespace ConsoleLab3
                 if (!FileNotFoundMsg(commands))
                 {
                     WordList SelectedList = WordList.LoadList(commands[1]);
+                
+                    string ShowCaseLanguageRow = "";
+                    foreach (string L in SelectedList.Languages)
+                    {
+                        ShowCaseLanguageRow += $"{L}";
+                        for (int i = ShowCaseLanguageRow.Length; i < 15; i++)
+                        {
+                            ShowCaseLanguageRow += " ";
+                        }
+                    }
                     Action<string[]> Myaction = (WordTranslations) =>
                     {
                         string ShowCaseWord = "";
@@ -271,12 +281,9 @@ namespace ConsoleLab3
             {
                 string ListName = comands[1];
                 List<string> Languages = new();
-                for(int i = 0; i < comands.Length; i++)
+                for(int i = 2; i < comands.Length; i++)
                 {
-                    if(i > 1)
-                    {
-                        Languages.Add(comands[i]);
-                    }
+                    Languages.Add(comands[i]);
                 }
                 WordList NewList = new WordList(ListName, Languages.ToArray());
                 NewList.Save();
