@@ -32,6 +32,9 @@
             this.BtnAddWord = new System.Windows.Forms.Button();
             this.BtnRemoveWord = new System.Windows.Forms.Button();
             this.BtnPractice = new System.Windows.Forms.Button();
+            this.BtnCloseListWindow = new System.Windows.Forms.Button();
+            this.ListWindowLabel = new System.Windows.Forms.Label();
+            this.ListWindowInstructions = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // ListTable
@@ -51,6 +54,7 @@
             this.BtnAddWord.TabIndex = 1;
             this.BtnAddWord.Text = "Add word";
             this.BtnAddWord.UseVisualStyleBackColor = true;
+            this.BtnAddWord.Click += new System.EventHandler(this.BtnAddWord_Click);
             // 
             // BtnRemoveWord
             // 
@@ -60,6 +64,7 @@
             this.BtnRemoveWord.TabIndex = 1;
             this.BtnRemoveWord.Text = "Remove word";
             this.BtnRemoveWord.UseVisualStyleBackColor = true;
+            this.BtnRemoveWord.Click += new System.EventHandler(this.BtnRemoveWord_Click);
             // 
             // BtnPractice
             // 
@@ -70,11 +75,43 @@
             this.BtnPractice.Text = "Practice";
             this.BtnPractice.UseVisualStyleBackColor = true;
             // 
+            // BtnCloseListWindow
+            // 
+            this.BtnCloseListWindow.Location = new System.Drawing.Point(393, 356);
+            this.BtnCloseListWindow.Name = "BtnCloseListWindow";
+            this.BtnCloseListWindow.Size = new System.Drawing.Size(75, 23);
+            this.BtnCloseListWindow.TabIndex = 2;
+            this.BtnCloseListWindow.Text = "Cansel";
+            this.BtnCloseListWindow.UseVisualStyleBackColor = true;
+            this.BtnCloseListWindow.Click += new System.EventHandler(this.BtnCloseListWindow_Click);
+            // 
+            // ListWindowLabel
+            // 
+            this.ListWindowLabel.AutoSize = true;
+            this.ListWindowLabel.Font = new System.Drawing.Font("Time Machino", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.ListWindowLabel.Location = new System.Drawing.Point(44, 7);
+            this.ListWindowLabel.Name = "ListWindowLabel";
+            this.ListWindowLabel.Size = new System.Drawing.Size(218, 67);
+            this.ListWindowLabel.TabIndex = 3;
+            this.ListWindowLabel.Text = "Words";
+            // 
+            // ListWindowInstructions
+            // 
+            this.ListWindowInstructions.AutoSize = true;
+            this.ListWindowInstructions.Location = new System.Drawing.Point(602, 59);
+            this.ListWindowInstructions.Name = "ListWindowInstructions";
+            this.ListWindowInstructions.Size = new System.Drawing.Size(153, 15);
+            this.ListWindowInstructions.TabIndex = 4;
+            this.ListWindowInstructions.Text = "(click column name to sort)";
+            // 
             // ListWIndow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.ListWindowInstructions);
+            this.Controls.Add(this.ListWindowLabel);
+            this.Controls.Add(this.BtnCloseListWindow);
             this.Controls.Add(this.BtnPractice);
             this.Controls.Add(this.BtnRemoveWord);
             this.Controls.Add(this.BtnAddWord);
@@ -82,6 +119,7 @@
             this.Name = "ListWIndow";
             this.Text = "ListWIndow";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -91,5 +129,8 @@
         private Button BtnAddWord;
         private Button BtnRemoveWord;
         private Button BtnPractice;
+        private Button BtnCloseListWindow;
+        private Label ListWindowLabel;
+        private Label ListWindowInstructions;
     }
 }
