@@ -21,7 +21,7 @@
                 Directory.CreateDirectory(FolderPath);
             }
         }
-        public static string[] GetList() //Here check/creat folder
+        public static string[] GetList() 
         {
             CheckFonderExists();
             DirectoryInfo FolderContent = new DirectoryInfo(FolderPath);
@@ -44,7 +44,6 @@
             {
                 return null;
             }
-            //Here somehow causing to add an empty string into the array  need fix
             string[] Languages = FileLines.First();
             
             WordList SelectedList = new(name, Languages);
