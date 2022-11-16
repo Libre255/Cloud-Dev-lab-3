@@ -68,5 +68,11 @@ namespace Lab3Winform
             RemoveWordWindow RWW = new RemoveWordWindow(CurrentList, ListTable.Items.Clear, ListTableConfig);
             RWW.ShowDialog();
         }
+
+        private void BtnPractice_Click(object sender, EventArgs e)
+        {
+            PracticeWindow PracticeWin = new(CurrentList);
+            PracticeWin.ShowDialog();
+        }
     }
 }

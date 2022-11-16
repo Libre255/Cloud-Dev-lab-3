@@ -74,6 +74,7 @@
             this.BtnPractice.TabIndex = 1;
             this.BtnPractice.Text = "Practice";
             this.BtnPractice.UseVisualStyleBackColor = true;
+            this.BtnPractice.Click += new System.EventHandler(this.BtnPractice_Click);
             // 
             // BtnCloseListWindow
             // 
